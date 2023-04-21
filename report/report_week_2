@@ -9,7 +9,9 @@ Progress:
     * Create a shiny app of map plots with density of programs for each region
     * Make options for different age groups and categories
 * Started a simple EDA
+* Data cleaning
+    * Dropped 167 observations because they didn't have region, lon/lat, nor address data
 
 Plan:
 * Finish EDA
-* Start geo_join using map .shp file from MyCHI
+* Start geo_join using map .csv file from MyCHI
