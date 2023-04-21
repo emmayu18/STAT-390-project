@@ -13,5 +13,11 @@ Progress:
     * Dropped 167 observations because they didn't have region, lon/lat, nor address data
 
 Plan:
-* Finish EDA
-* Start geo_join using map .csv file from MyCHI
+* Shruti:
+    * Geo_join, push data that's been spatially joined, send word cloud script
+* Rhona:
+    * Write EDA Rmd file, few visualizations
+* Emma:
+    * Create visualizations for EDA, cleaning data (take out unnecessary vars,
+      deal with duplicate data points, deal with missing data etc.)
+    
