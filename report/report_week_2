@@ -1,0 +1,15 @@
+4/14/2023
+
+Members: Emma Yu, Rhona Zhang, Shruti Rathnavel
+
+Progress:
+* Downloaded and reviewed data
+* Picked weekly meeting time and met once
+* Thought of a general plan of where we want to take this project
+    * Create a shiny app of map plots with density of programs for each region
+    * Make options for different age groups and categories
+* Started a simple EDA
+
+Plan:
+* Finish EDA
+* Start geo_join using map .shp file from MyCHI
