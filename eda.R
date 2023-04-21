@@ -37,6 +37,9 @@ ggplot(dat, mapping = aes(fct_infreq(category_name))) +
 
 # figure out a way to look at distribution of ages within the range
 # (combine min_age and max_age)
+age_dat <- dat %>%
+  mutate(age_range = c(max_age - min))
+  
 ggplot(dat, aes(min_age)) +
   geom_histogram()
 ggplot(dat, aes(max_age)) +
@@ -51,3 +54,9 @@ ggplot(dat, aes(max_age)) +
 
 
 # Figure out region using lon/lat or address (convert to lon/lat first)
+
+
+
+# Make visualizations for EDA
+# Clean data (repeats from multiple categories, how to deal with missing data,'
+# take out unnecessary columns)
