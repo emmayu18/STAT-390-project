@@ -1,0 +1,33 @@
+---
+title: "eda"
+author: "Rhona Zhang"
+date: "`r Sys.Date()`"
+output: pdf_document
+---
+
+# My CHI. My Future.
+
+## Description of data
+
+## Project goals
+
+Our goal is to visualize the equity of opportunity for Chicago residents to local programs across different communities in Chicago
+- time/seasonal/weekday(weekend)
+- affordability: price to attend, free food or not
+
+online: availability, for each age group 
+
+```{r}
+library(tidyverse)
+library(dplyr)
+library(ggplot2)
+library(sf)
+```
+
+
+## Read in data
+
+```{r}
+data <- read_tsv("data/convert_MCMF_ALL_TIME_DATA.csv")
+geo <- read.csv("data/CommAreas.csv")
+```

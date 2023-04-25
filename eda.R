@@ -12,33 +12,87 @@ list_priority_areas = c("Austin", "North Lawndale", "Humboldt Park",
                        "South Lawndale", "West Pullman"
 )
 
+
 ## skim data
 skim_without_charts(dat)
 
-## data cleaning
+
+## data cleaning and mutations
+# clean names, select out unnecessary features, filter out min_age < 25 data
 dat <- dat %>%
   janitor::clean_names() %>%
-  select(-"index_row") %>%
+  select(-c("index_row", "logo_url", "online_address", "program_url", 
+            "registration_url","contact_name", "contact_email", 
+            "contact_phone")) %>%
   filter(min_age<25) 
 
-## visualization
-# make map with density of programs in each region (geographic_cluster_name)
-# could make it interactive by allowing user to filter with program category
+dat2 <- dat 
 
-ggplot(dat, mapping = aes(fct_infreq(geographic_cluster_name))) +
-  geom_bar() +
-  theme(axis.text.x = element_text(size = 3)) 
-  # ADD color for ones that are in priority list
+# addressing duplicate data points
+  # saved duplicate category names into list of strings
+category_dat <- dat %>%
+  group_by(id) %>%
+  summarize(category_name = paste0(category_name, collapse = ", ")) %>%
+  mutate(category_name = strsplit(category_name, ", "))
+dat <- dat %>%
+  select(-category_name) %>%
+  distinct(id, .keep_all = TRUE) %>%
+  inner_join(category_dat, by = c("id"))
+  
+# take out days of the week columns?
 
-ggplot(dat, mapping = aes(fct_infreq(category_name))) +
-  geom_bar() +
-  theme(axis.text.x = element_text(size = 4)) 
+# number of categories
+dat <- dat %>%
+  mutate(num_categories = lengths(category_name))
 
+# number of days between start of registration and end of registration
+dat %>%
+  mutate(registration_open = as.Date(registration_open, 
+                                     format = "%m/%d/%y"),
+         registration_deadline = as.Date(registration_open, 
+                                         format = "%m/%d/%y")) %>%
+  mutate(days_to_register = as.numeric(registration_deadline - registration_open))
+  # All of the registration_open and registration_deadline data are the same
+  # meaningless
 
-# figure out a way to look at distribution of ages within the range
-# (combine min_age and max_age)
+# whether the region is on priority list
+dat <- dat %>%
+  mutate(priority = tolower(geographic_cluster_name) %in% tolower(list_priority_areas))
+
+# age range
+dat <- dat %>%
+  mutate(age_range = max_age - min_age)
+
+# age range list
 age_dat <- dat %>%
-  mutate(age_range = c(max_age - min))
+  mutate(age_list = c(seq(min_age[1], max_age[1])))
+
+
+## Visualization
+# dist. of regions with priority highlighted
+ggplot(dat, mapping = aes(fct_infreq(geographic_cluster_name), fill = priority)) +
+  geom_bar() + 
+  labs(title = "Distribution of Regions",
+       x = "Region Name",
+       y = "Count") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(size = 5, angle = 90, hjust = 0.95)) + 
+  scale_fill_manual(values=c("#999999", "#56B4E9"))
+# Add color to x axis label
+# Fix legend
+# Remove NA
+
+# dist. of categories
+ggplot(dat2, mapping = aes(fct_infreq(category_name))) +
+  geom_bar() +
+  labs(title = "Distribution of Categories",
+       x = "Category",
+       y = "Count") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(size = 6, angle = 90, hjust = 0.95)) 
+
+
+
   
 ggplot(dat, aes(min_age)) +
   geom_histogram()
@@ -55,8 +109,5 @@ ggplot(dat, aes(max_age)) +
 
 # Figure out region using lon/lat or address (convert to lon/lat first)
 
-
-
-# Make visualizations for EDA
-# Clean data (repeats from multiple categories, how to deal with missing data,'
-# take out unnecessary columns)
+# make map with density of programs in each region (geographic_cluster_name)
+# could make it interactive by allowing user to filter with program category
