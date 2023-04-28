@@ -1,0 +1,18 @@
+4/28/2023
+
+Members: Emma Yu, Rhona Zhang, Shruti Rathnavel
+
+Progress:
+* Cleaned data
+    * Got rid of unnecessary variables
+    * Removed duplicate data points and combined multiple category names into a list in one col
+    * Mutated new variables
+* Geo join
+    * Used census API to convert to address to lon/lat points
+    * Set up data for easy map building using geo join
+* EDA
+    * Completed an Rmd file with EDA results
+    * Created a few simple plots showing distribution of important variables and added to Red file
+
+Plan:
+* Work on Kaggle competition
