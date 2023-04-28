@@ -65,25 +65,46 @@ dat <- dat %>%
 
 # age range list
 age_dat <- dat %>%
-  mutate(age_list = c(seq(min_age[1], max_age[1])))
+  mutate(age_list = toString(min_age:max_age)) %>%
+  select(age_list)
 
+age <- data.frame(matrix(NA,    
+                          nrow = 73982,
+                          ncol = 1)) %>%
+  rename(age_list = matrix.NA..nrow...73982..ncol...1.)
+
+for (ii in 1:nrow(dat)) {
+  age_row <- age[ii,]
+  age_row[0] = dat[ii,][7] - dat[ii,][6]
+}
+
+age <- data.frame(matrix(NA,    
+                         nrow = 3,
+                         ncol = 1)) %>%
+  rename(age_list = matrix.NA..nrow...3..ncol...1.)
+dat <- data.frame("min_age" = c(1,2,3), "max_age" = c(8,9, 11))
+for (ii in 1:nrow(dat)) {
+  age[ii, "age_list"] <- dat[ii,][2] - dat[ii,][1]
+}
 
 ## Visualization
 # dist. of regions with priority highlighted
-ggplot(dat, mapping = aes(fct_infreq(geographic_cluster_name), fill = priority)) +
+ggplot(dat %>% filter(!is.na(geographic_cluster_name)), 
+       mapping = aes(fct_infreq(geographic_cluster_name), fill = priority)) +
   geom_bar() + 
   labs(title = "Distribution of Regions",
        x = "Region Name",
-       y = "Count") +
+       y = "Count",
+       fill = "Priority Region") +
   theme_minimal() +
-  theme(axis.text.x = element_text(size = 5, angle = 90, hjust = 0.95)) + 
+  theme(axis.text.x = element_text(size = 5, 
+                                   angle = 90, 
+                                   hjust = 0.95)) + 
   scale_fill_manual(values=c("#999999", "#56B4E9"))
-# Add color to x axis label
-# Fix legend
-# Remove NA
 
 # dist. of categories
-ggplot(dat2, mapping = aes(fct_infreq(category_name))) +
+ggplot(dat2 %>% filter(!is.na(category_name)), 
+       mapping = aes(fct_infreq(category_name))) +
   geom_bar() +
   labs(title = "Distribution of Categories",
        x = "Category",
