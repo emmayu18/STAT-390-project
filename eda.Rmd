@@ -2,32 +2,100 @@
 title: "eda"
 author: "Rhona Zhang"
 date: "`r Sys.Date()`"
-output: pdf_document
+output: 
+  html_document:
+    code_folding: hide
 ---
 
-# My CHI. My Future.
-
-## Description of data
-
-## Project goals
-
-Our goal is to visualize the equity of opportunity for Chicago residents to local programs across different communities in Chicago
-- time/seasonal/weekday(weekend)
-- affordability: price to attend, free food or not
-
-online: availability, for each age group 
-
-```{r}
+```{r, include=FALSE}
+# load in packages
 library(tidyverse)
 library(dplyr)
 library(ggplot2)
+library(janitor)
 library(sf)
 ```
 
+```{r, include=FALSE}
+# load in data
+data <- read_tsv("data/convert_MCMF_ALL_TIME_DATA.csv", show_col_types = FALSE) %>% 
+  clean_names() %>% 
+  # removing all programs not forr youth (defined as younger than 25)
+  filter(min_age < 25)
 
-## Read in data
+geo <- read.csv("data/CommAreas.csv") %>% 
+  clean_names()
+```
+
+# My CHI. My Future.
+
+My CHI. My Future. is a youth initiative for the City of Chicago launched in May 2020 to connect young people, ranging from the ages 0-24, with out-of-school programs. 
+
+The aim is to create a city-wide and community network for nearly 350 organizations and youth to easily discover and cultivate their passions and talents, as well as strengthen and center their identity and voice.
+
+## Description of data
+
+My CHI. My Future. has over 350 providers, including the Park District and Public Library, that each offer thousands of community programs.The database consists of 56 variables and over 80,000 observations.
+
+Providers are required to specify information about their opportunities, which include the program name, description, organization name, minimum age, maximum age, meeting type, start and end date, and program price. Other variables also include category, capacity, URL, free food available, etc. 
+
+The data organizes these opportunities into 4 categories:
+\begin{itemize}
+\item Programs: lasting five days to a year or recurring
+\item Events: four days or less
+\item Jobs: work and career, paid opportunity
+\item Resources: longer than 1 year
+\end{itemize}
+
+## Project goals
+
+Our goal is to visualize the equity of opportunity for the City of Chicago's youth to have access to and participate in local out-of-school programs across the city's diverse neighborhoods and communities. 
+
+We would like to understand how accessible are different categories of programs for different ages of youth? From the data we have, we want to understand how equitable the youth opportunity landscape is across geography by age and category. Do youth in different communities/regions have the same access to similar types of programs? It may vary depending on age and category.
+
+online: availability, for each age group 
+
+We will separately analyze online programs and compare results with in-person because they technically serve all geographic regions of Chicago, but we do acknowledge that the experiences vary between 
+
+In the in-person programs, 
+- map : 
+
+We would like to understand 
+
+- time/seasonal/weekday(weekend)
+- affordability: price to attend, free food or not
+
+## Word cloud
+
+
 
 ```{r}
-data <- read_tsv("data/convert_MCMF_ALL_TIME_DATA.csv")
-geo <- read.csv("data/CommAreas.csv")
+# count na values in data
+na <- data %>% 
+  select(everything()) %>%  # replace to your needs
+  summarise_all(funs(sum(is.na(.))))
 ```
+
+## Online 
+
+There are over 10,000 programs that are offered online, so we wanted to...: 
+
+weekday: weekend vs. weekday
+seasonal: scatter plot
+facet by category 
+
+```{r}
+online <- data %>% 
+  filter(meeting_type == "online")
+
+face <- data %>% 
+  filter(meeting_type == "face_to_face")
+```
+
+## Cost analysis
+
+```{r}
+ggplot(data = data, mapping = aes(x = program_price, fill = meeting_type)) +
+  geom_bar(position = position_dodge()) 
+```
+
