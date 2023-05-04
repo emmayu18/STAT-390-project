@@ -11,6 +11,8 @@ library(censusxy)
 mcmf <- read_tsv("data/convert_MCMF_ALL_TIME_DATA.csv") %>%
   janitor::clean_names()
 
+## IMPUTE SOME LAT/LON MISSINGNESS WITH CENSUS API
+
 ## create a df to be populated
 ## by address and cxy_single results
 df <- censusxy::cxy_single("3700 Lindell Blvd", "St. Louis", "MO", 63139) %>%
@@ -18,6 +20,7 @@ df <- censusxy::cxy_single("3700 Lindell Blvd", "St. Louis", "MO", 63139) %>%
   colnames() %>% 
   purrr::map_dfc(setNames, object = list(character()))
 
+## finding data with addresses but no points
 mcmf2 <- mcmf %>%
   filter(!is.na(address)) %>%
   filter(!is.na(city)) %>%
@@ -28,6 +31,7 @@ mcmf2 <- mcmf %>%
   select(address, city, zipcode, state) %>%
   distinct()
 
+## finding lat/lon from address
 for (i in 1:nrow(mcmf2)){
   cxy_out <- cxy_single(mcmf2[i, ]$address, mcmf2[i, ]$city, mcmf2[i, ]$state, mcmf2[i, ]$zipcode)
   if (is.null(cxy_out)){
@@ -39,14 +43,11 @@ for (i in 1:nrow(mcmf2)){
   df <- bind_rows(df, cxy_out)  
 }
 
-## can put this into the function
+######## put this into the function
 df2 <- df %>%
   select(address,
          coordinates.x,
          coordinates.y)
-
-mcmf_online <- mcmf %>%
-  filter(meeting_type == "online")
 
 mcmf_impute <- mcmf %>%
   filter(meeting_type == "face_to_face") %>%
@@ -88,18 +89,16 @@ mcmf_map2 <- mcmf_map %>%
 
 mcmf_sp <- st_join(map, mcmf_map2)
 
+mcmf_cat <- mcmf_sp %>%
+  ##select(community, category_name) %>%
+  group_by(community, category_name) %>%
+  dplyr::summarise(n = n())
+
 ggplot() +
-  geom_sf(data = mcmf_map) 
+  geom_sf(data = mcmf_cat, aes(fill = n)) +
+  facet_wrap("category_name")
 
 ggplot() +
   geom_sf(data = mcmf_sp)
 
-mcmf_map %>%
-  filter(!is.na(latitude)) %>%
-  filter(latitude > 41) %>%
-  st_as_sf(coords = c("longitude", "latitude"),
-           # within illinois coordinate reference system
-           crs = st_crs(illinois)) %>%
-  ggplot() +
-  geom_sf() +
-  geom_sf(data = map)
+save(mcmf_map2, mcmf_sp, map, file = "map_cleaning.rda")
