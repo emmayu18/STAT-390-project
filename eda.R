@@ -59,33 +59,23 @@ dat %>%
 dat <- dat %>%
   mutate(priority = tolower(geographic_cluster_name) %in% tolower(list_priority_areas))
 
-# age range
-dat <- dat %>%
-  mutate(age_range = max_age - min_age)
 
 # age range list
 age_dat <- dat %>%
-  mutate(age_list = toString(min_age:max_age)) %>%
-  select(age_list)
+  select(min_age, max_age) %>% 
+  rowwise() %>%
+  mutate(age_list = strsplit(toString(seq.int(min_age, max_age)), ", ")) 
 
-age <- data.frame(matrix(NA,    
-                          nrow = 73982,
-                          ncol = 1)) %>%
-  rename(age_list = matrix.NA..nrow...73982..ncol...1.)
+list_age = c()
 
-for (ii in 1:nrow(dat)) {
-  age_row <- age[ii,]
-  age_row[0] = dat[ii,][7] - dat[ii,][6]
+for (i in age_dat$age_list) {
+  for (j in i){
+    list_age <- append(list_age, as.numeric(j))
+  }
 }
 
-age <- data.frame(matrix(NA,    
-                         nrow = 3,
-                         ncol = 1)) %>%
-  rename(age_list = matrix.NA..nrow...3..ncol...1.)
-dat <- data.frame("min_age" = c(1,2,3), "max_age" = c(8,9, 11))
-for (ii in 1:nrow(dat)) {
-  age[ii, "age_list"] <- dat[ii,][2] - dat[ii,][1]
-}
+save(list_age, file = "list_age.rda")
+
 
 ## Visualization
 # dist. of regions with priority highlighted
@@ -97,7 +87,7 @@ ggplot(dat %>% filter(!is.na(geographic_cluster_name)),
        y = "Count",
        fill = "Priority Region") +
   theme_minimal() +
-  theme(axis.text.x = element_text(size = 5, 
+  theme(axis.text.x = element_text(size = 4, 
                                    angle = 90, 
                                    hjust = 0.95)) + 
   scale_fill_manual(values=c("#999999", "#56B4E9"))
@@ -112,23 +102,19 @@ ggplot(dat2 %>% filter(!is.na(category_name)),
   theme_minimal() +
   theme(axis.text.x = element_text(size = 6, angle = 90, hjust = 0.95)) 
 
-
-
-  
-ggplot(dat, aes(min_age)) +
-  geom_histogram()
-ggplot(dat, aes(max_age)) +
-  geom_histogram()
-
-## EDA To-do
-# skim, issues
-# simple map (category and age groups in each region)
-# seasonal analysis
-# transport data?
-# univariate distribution
-
-
-# Figure out region using lon/lat or address (convert to lon/lat first)
-
-# make map with density of programs in each region (geographic_cluster_name)
-# could make it interactive by allowing user to filter with program category
+# dist. of age
+load("list_age.rda")
+age_data <- data.frame(list_age)
+ggplot(age_data, aes(list_age)) +
+  geom_histogram(bins = 20, color = "white") + 
+  xlim(0,20) + 
+  labs(x = "Age",
+       y = "Count") +
+  theme_minimal()
+ggplot(age_data, aes(list_age)) +
+  geom_bar() +
+  xlim(0,20) + 
+  labs(title = "Distribution of Age",
+       x = "Age",
+       y = "Count") +
+  theme_minimal()
