@@ -1,0 +1,255 @@
+---
+title: "My CHI. My Future. Exploratory Data Analysis"
+author: "Shruti Rathnavel, Emma Yu, and Rhona Zhang"
+date: "`r Sys.Date()`"
+output: 
+  html_document:
+    code_folding: hide
+---
+
+```{r, include=FALSE}
+# load in packages
+library(tidyverse)
+library(dplyr)
+library(janitor)
+library(lubridate)
+library(gtExtras)
+library(formattable)
+library(sf)
+```
+
+```{r, include=FALSE}
+# load in data (remove min_age < 25)
+data <- read_tsv("data/convert_MCMF_ALL_TIME_DATA.csv", show_col_types = FALSE) %>% 
+  clean_names() %>% 
+  select(-c("index_row", "logo_url", "online_address", "program_url", 
+            "registration_url","contact_name", "contact_email", 
+            "contact_phone")) %>%
+  mutate(category_name = str_replace(category_name, '&', 'And'),
+         category_name = str_replace_all(category_name, '\\.', '')) %>% 
+  filter(min_age < 25)
+
+
+
+# data w/ column for length of opportunity
+  # how should i deal with program_length = 0 ?
+time <- data %>%
+  mutate(start_date = as.Date(start_date, format = "%m/%d/%y"),
+         end_date = parse_date_time(end_date, orders = c("%m/%d/%y")),
+         program_length = as.numeric(difftime(end_date, start_date, units = "days"))) %>% 
+  # new column: program type
+  mutate(program_type = case_when(
+    category_name == "Work + Career" | program_pays_participants == "Paid, Type Unknown" ~ "job",
+    program_length <= 4 ~ "events",
+    program_length >= 5 & program_length <= 365 ~ "programs",
+    program_length > 365 ~ "resources")) 
+
+# data w/ column for season of each event based on month of start_date
+seasons <- data %>%
+  mutate(new_start_date = parse_date_time(start_date, orders = c("%m/%d/%y")),
+    program_season = case_when(
+      month(new_start_date) %in% c(3,4,5) ~ 'spring',
+      month(new_start_date) %in% c(6,7,8) ~ 'summer',
+      month(new_start_date) %in% c(9,10,11) ~ 'fall',
+      month(new_start_date) %in% c(12,1,2) ~ 'winter',
+  )) %>% 
+  select(-new_start_date)
+
+# group by category and renaming similar inputs
+category <- data %>% 
+  group_by(category_name) %>% 
+  summarise(mean_min_age = round(mean(min_age), digits = 0), 
+            mean_max_age = round(mean(max_age), digits = 0)) %>% 
+  select(category_name, contains("_age"))
+
+# category plus count of each input
+category_count <- category %>% 
+  left_join(data %>% 
+              group_by(category_name) %>% 
+              summarise(n = n()), by = "category_name")
+
+# data with only online opportunities
+online <- data %>% 
+  filter(meeting_type == "online")
+
+# count na values in data
+na <- data %>%
+  select(everything()) %>%
+  summarise_all(funs(sum(is.na(.)))) %>%
+  pivot_longer(cols = -id)
+```
+
+# My CHI. My Future.
+
+My CHI. My Future. is a youth initiative for the City of Chicago launched in May 2020 to connect young people, ranging from the ages 0-24, with out-of-school programs. 
+
+The aim is to create a city-wide and community network for nearly 350 organizations and youth to easily discover and cultivate their passions and talents, as well as strengthen and center their identity and voice.
+
+## Description of data
+
+Since My CHI. My Future. has over 350 providers, the database is quite vast consisting of 56 variables and over 80,000 observations.
+
+Providers are required to specify information about their opportunities, which include the program name, description, organization name, minimum age, maximum age, meeting type, start and end date, and program price. Other variables also include category, capacity, URL, free food available, etc. 
+
+The data organizes these opportunities into 4 categories:
+
++ Programs: lasting five days to a year or recurring
++ Events: four days or less
++ Jobs: work and career, paid opportunity
++ Resources: longer than 1 year
+
+```{r}
+table(time$program_type)
+```
+
+
+## Project goals
+
+Our goal is to visualize the equity of opportunity for the City of Chicago's youth to have access to and participate in local out-of-school programs across the city's diverse neighborhoods and communities. 
+
+We would like to understand how accessible are different categories of programs for different ages of youth? Do youth in different communities/regions of Chicago have the same access to similar types of programs? 
+
+Since online technically serve all geographic regions of Chicago, we will separately analyze online programs and compare the results with those from in-person programs. However, we do acknowledge that the engagement and experiences vary between the different program types. 
+
+
+TODO:
+weekday: weekend vs. weekday
+seasonal: scatter plot
+facet by category 
+
+## Accessibility across different categories
+
+```{r}
+ggplot(data = data, mapping = aes(x = category_name)) +
+  geom_bar(fill = "#B3DDF2") + 
+  coord_flip() +
+  labs(title = "Number of programs in each category", 
+       x = NULL,
+       y = "Count") +
+  theme_classic()
+```
+
+```{r}
+science <- data[data$category_name == "Academic Support", ]
+```
+
+
+```{r}
+program_type <- ggplot(data = time, mapping = aes(x = program_type, fill = category_name)) +
+  geom_bar() +
+  labs(title = "Category types in each opportunity category", 
+       x = NULL,
+       y = "Count") +
+  theme_classic() +
+  theme(legend.title= element_blank())
+
+ggsave("program_type.png", plot = program_type, width = 6, height = 4, dpi = 300)
+```
+
+```{r}
+cat_age <- ggplot(data = category, mapping = aes(x = mean_min_age, y = mean_max_age)) +
+  geom_point(aes(color = category_name, fill = category_name)) +
+  labs(title = "Mean max and min age by category", 
+       x = "Mean Minimum Age",
+       y = "Mean Maximum Age") +
+  theme_classic() +
+  theme(legend.title= element_blank())
+
+ggsave("cat_age.png", plot = cat_age, width = 6, height = 4, dpi = 300)
+```
+
+
+## Time Series
+
+```{r}
+cat_season <- ggplot(data = seasons, mapping = aes(x = program_season, fill = category_name)) + 
+  geom_bar() +
+  labs(title = "Category types in each season", 
+       x = NULL,
+       y = "Count") +
+  theme_classic() +
+  theme(legend.title= element_blank())
+
+ggsave("cat_season.png", plot = cat_season, width = 6, height = 4, dpi = 300)
+```
+
+```{r}
+online_age <- ggplot(data = seasons, mapping = aes(x = program_season,  y = min_age, color = meeting_type, fill = meeting_type)) +
+  geom_boxplot(alpha = 0.5) +
+  scale_color_manual(name = "Meeting Type", values = c("#B3DDF2", "#FF0000")) +
+  scale_fill_manual(name = "Meeting Type", values = c("#B3DDF2", "#FF0000")) +
+  theme_classic() +
+  labs(title = "Minimum age distribution of online vs. in-person programs across seasons", 
+       x = NULL,
+       y = "Minimum Age")
+
+ggsave("online_age.png", plot = online_age, width = 6, height = 4, dpi = 300)
+```
+
+```{r}
+ggplot(data = seasons, mapping = aes(x = program_season,  y = min_age, color = meeting_type, fill = meeting_type)) +
+  geom_boxplot(alpha = 0.5) +
+  scale_color_manual(name = "Meeting Type", values = c("#B3DDF2", "#FF0000")) +
+  scale_fill_manual(name = "Meeting Type", values = c("#B3DDF2", "#FF0000")) +
+  theme_classic() +
+  labs(title = "Minimum age distribution of online vs. in-person programs across seasons", 
+       x = NULL,
+       y = "Minimum Age")
+```
+
+
+## Online 
+
+
+
+#### Comparing the cost of attending the program:
+
+```{r}
+online_price <- ggplot(data = data, mapping = aes(x = program_price, fill = meeting_type)) +
+  geom_bar(position = position_dodge()) + 
+  scale_fill_manual(name = "Meeting Type", values = c("#B3DDF2", "#FF0000")) +
+  theme_classic() +
+  labs(title = "Cost of attending online vs. in-person programs", 
+       x = NULL,
+       y = "Count")
+```
+
+
+
+```{r}
+online_season <- ggplot(data = seasons, mapping = aes(x = program_season, fill = meeting_type)) +
+  geom_bar(position = position_dodge()) + 
+  scale_fill_manual(name = "Meeting Type", values = c("#B3DDF2", "#FF0000")) +
+  theme_classic() +
+  labs(title = "Accessibility across seasons", 
+       x = NULL,
+       y = "Count")
+
+ggsave("online_season.png", plot = online_season, width = 6, height = 4, dpi = 300)
+```
+
+
+```{r}
+ggplot(data = data, mapping = aes(x = program_provides_free_food, fill = meeting_type)) +
+  geom_bar(position = position_dodge()) + 
+  scale_fill_manual(name = "Meeting Type", values = c("#B3DDF2", "#FF0000")) +
+  theme_classic() +
+  labs(title = "", 
+       x = NULL,
+       y = "Count")
+```
+
+
+```{r}
+load("map_cleaning.rda")
+
+eda_counts <- mcmf_sp %>%
+  group_by(community, category_name) %>%
+  dplyr::summarise(n = n())
+```
+
+```{r, fig.height=8, fig.width=10}
+ggplot() +
+  geom_sf(data = eda_counts, aes(fill = n)) +
+  facet_wrap("category_name")
+```
