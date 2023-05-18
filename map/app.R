@@ -94,7 +94,8 @@ ui <- fluidPage(
                              choices = c("Academics",
                                          "Leisure & Arts",
                                          "Professional Skill Building",
-                                         "Community Service"))
+                                         "Community Service"),
+                             selected = "Academics")
         ),
         
         mainPanel(
