@@ -89,7 +89,7 @@ ui <- fluidPage(
     # Sidebar with a slider input for number of bins 
     sidebarLayout(
         sidebarPanel(
-          checkboxGroupInput("gen_category", 
+          radioButtons("gen_category", 
                              label = "Select a Category", 
                              choices = c("Academics",
                                          "Leisure & Arts",
