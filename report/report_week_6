@@ -1,0 +1,12 @@
+5/19/2023
+
+Members: Emma Yu, Rhona Zhang, Shruti Rathnavel
+
+Progress:
+* Created a base map for our Shiny app
+* Added basic features (buttons for age, category name filtering)
+
+Plan:
+* Discuss additional features we can add to the app
+* Find census data from Chicago public schools about academic performance, graduation rate, etc. to add to our map
+* Add CTA line data to map
