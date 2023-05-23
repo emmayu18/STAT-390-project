@@ -1,0 +1,40 @@
+---
+title: "intro"
+author: "Rhona Zhang"
+date: "`r Sys.Date()`"
+output: pdf_document
+---
+
+# My CHI. My Future.
+
+My CHI. My Future. is a youth initiative for the City of Chicago launched in May 2020 to connect young people, ranging from the ages 0-24, with out-of-school programs. 
+
+The aim is to create a city-wide and community network for nearly 350 organizations and youth to easily discover and cultivate their passions and talents, as well as strengthen and center their identity and voice.
+
+## Description of data
+
+Since My CHI. My Future. has over 350 providers, the database is quite vast consisting of 56 variables and over 80,000 observations.
+
+Providers are required to specify information about their opportunities, which include the program name, description, organization name, minimum age, maximum age, meeting type, start and end date, and program price. Other variables also include category, capacity, URL, free food available, etc. 
+
+The data organizes these opportunities into 4 categories:
+
++ Programs: lasting five days to a year or recurring
++ Events: four days or less
++ Jobs: work and career, paid opportunity
++ Resources: longer than 1 year
+
+
+## Project goals
+
+Our goal is to visualize the equity of opportunity for the City of Chicago's youth to have access to and participate in local out-of-school programs across the city's diverse neighborhoods and communities. 
+
+We would like to understand how accessible are different categories of programs for different ages of youth? Do youth in different communities/regions of Chicago have the same access to similar types of programs? 
+
+Since online technically serve all geographic regions of Chicago, we will separately analyze online programs and compare the results with those from in-person programs. However, we do acknowledge that the engagement and experiences vary between the different program types. 
+
+
+TODO:
+weekday: weekend vs. weekday
+seasonal: scatter plot
+facet by category 
