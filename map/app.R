@@ -72,7 +72,9 @@ ui <- shinyUI(navbarPage("My CHI. My Future. Explorer",
                                                             "Proportion"),
                                                 selected = "Count")),
                       mainPanel(plotOutput("map", height = 500))
-                      ))
+                      )),
+    
+    tabPanel("Online Opportunities")
     
     # close the UI definition
     ))
