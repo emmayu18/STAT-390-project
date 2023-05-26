@@ -13,6 +13,7 @@ library(sp)
 
 load("map_cleaning.rda")
 
+# categorizing into general categories
 eda_counts <- mcmf_sp %>%
   group_by(community, category_name) %>%
   summarise(n = n()) %>% 
@@ -23,24 +24,35 @@ eda_counts <- mcmf_sp %>%
     category_name %in% c("Building & Fixing Things", "Computers", "Digital Media", "Managing Money", "Law", "Work + Career") ~ "Professional Skill Building",
     category_name %in% c("Helping Your Community", "Transportation", "Customer/Human Service", "Healthcare") ~ "Community Service"))
 
+# community, general category group by
 gencat_count <- eda_counts %>%
   group_by(community, general_category) %>%
-  summarize(n = sum(n))
+  summarize(n = sum(n)) %>% 
+  mutate(perc = (n / sum(gencat_count$n)) * 100)
 
 save(eda_counts, gencat_count, map, file = "map_counts.rda")
 
-# # load in data
-# data <- read_tsv("convert_MCMF_ALL_TIME_DATA.csv", show_col_types = FALSE) %>% 
-#   clean_names() %>% 
-#   # removing irrelevant columns
-#   select(-c("index_row", "logo_url", "online_address", "program_url", 
-#             "registration_url","contact_name", "contact_email", 
-#             "contact_phone")) %>%
-#   # renaming duplicate category names
-#   mutate(category_name = str_replace(category_name, '&', 'And'),
-#          category_name = str_replace_all(category_name, '\\.', '')) %>% 
-#   # removing programs with min_age over 25
-#   filter(min_age < 25)
+### load in mcmf data
+
+data <- read_tsv("convert_MCMF_ALL_TIME_DATA.csv", show_col_types = FALSE) %>%
+  clean_names() %>%
+  # removing irrelevant columns
+  select(-c("index_row", "logo_url", "online_address", "program_url",
+            "registration_url","contact_name", "contact_email",
+            "contact_phone")) %>%
+  # renaming duplicate category names
+  mutate(category_name = str_replace(category_name, '&', 'And'),
+         category_name = str_replace_all(category_name, '\\.', '')) %>%
+  # removing programs with min_age over 25
+  filter(min_age < 25)
+
+## percentage data
+percents <- gencat_count %>%
+  group_by(community) %>%
+  summarize(total_n = sum(n)) %>% 
+  mutate(perc = (total_n / sum(total_n)) * 100)
+
+food <- merge(mcmf_sp, data[, c("id","program_provides_free_food")], by = "id", all.x = TRUE)
 
 ##### EXTRA WRANGLING
 # 

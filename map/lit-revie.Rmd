@@ -1,0 +1,18 @@
+---
+title: "lit-review"
+author: "Rhona Zhang"
+date: "`r Sys.Date()`"
+output: pdf_document
+---
+
+##### Wealth Inequality
+
+Despite being the third largest city, Chicago has persistently been facing significant wealth inequality challenges, which is due to the significant variation in resource allocation. Some communities benefit from robust infrastructure, quality schools, healthcare facilities, and diverse economic opportunities, while others face immense barriers in accessing these resources. Historically marginalized neighborhoods often struggle with limited investment, inadequate public services, and insufficient job opportunities. Such disparities hinder social mobility and perpetuate systemic inequities, ultimately impacting the overall well-being and opportunities available to residents.
+
+It is estimated that a typical household’s wealth in the richest area of Chicago and Cook County is over <strong>200 times</strong> higher than a typical household’s wealth in the poorest areas. This disparity is geographically noticeable. Southern and western regions of Chicago have some of the lowest median net worth and over 40 percent of residents are living below the poverty level. According to the [Chicago Data Portal](https://data.cityofchicago.org/Health-Human-Services/below-poverty-level-by-community/b7zw-zvm2), Riverdale, Fuller Park, Englewood, and West Garfield Park are all areas that have poverty rates above 40 percent and the highest hardship indexes.
+
+##### Racial Disparities
+
+Furthermore, Chicago remains one of the most segregated metropolitan area in America. Racial disparities in socio-economic indicators persist, with African American and Hispanic communities often experiencing disproportionately high poverty rates, limited access to quality education, and limited economic opportunities. According to recent [Census](https://www.census.gov/quickfacts/chicagocityillinois) data, the city's population is approximately 33% non-Hispanic white, 29% African American, 29% Hispanic, and 7% Asian American. Despite whites being the minority in Chicago, they are the only group to see incomes rising by 52 percent between 1990 and 2012, compared to just 13 percent for African Americans and 15 percent for Hispanics. Interestingly, African American and Hispanic city residents have seen a fall in per capita incomes since 2000.
+
+This overlapping of racial and income segregation is clear in Chicago. The majority-white census tracts predominantly consist of less than 10 percent of families living in poverty, whereas slightly over half of the majority-black areas experience poverty rates exceeding 30 percent among families. Furthermore, one in four black Americans and one in six Hispanics live in high-poverty neighborhoods, compared to just one in thirteen white Americans. These disparities have a direct impact on the equity of opportunity available to residents in these communities.
