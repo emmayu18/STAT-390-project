@@ -72,7 +72,7 @@ ui <- shinyUI(navbarPage("My CHI. My Future. Explorer",
                                    h4("Select Grade Level Range:"),
                                    helpText("Select the grade level range you want to see. 0 stands for pre-K and below, and 13 stands for college and above."),
                                    sliderInput("age_range",
-                                               label = "Select age range:",
+                                               label = "Select grade range:",
                                                min = 0,
                                                max = 13,
                                                value = c(0, 13),
@@ -92,13 +92,6 @@ server <- function(input, output) {
 
     output$map <- renderPlot({
       
-      # fill_var <- switch(input$gen_category,
-      #                    "All" = gencat_count$count_sum,
-      #                    "Academics" = gencat_count$n_Academics,
-      #                    "Leisure & Arts" = gencat_count$`n_Leisure & Arts`,
-      #                    "Professional Skill Building" = gencat_count$`n_Professional Skill Building`,
-      #                    "Community Service" = gencat_count$`n_Community Service`)
-      
       fill_var <- switch(input$gen_category,
                          "All" = "sum",
                          "Academics" = "Academics",
@@ -117,7 +110,8 @@ server <- function(input, output) {
       # wrangle data
       eda_counts2 <- eda_counts
       gencat_count <- as.data.frame(eda_counts) %>%
-        filter(min_grade <= input$age_range[1] | max_grade >= input$age_range[2]) %>%
+        filter(!(min_grade < input$age_range[1] & max_grade < input$age_range[1]) & 
+                 !(min_grade > input$age_range[2] & max_grade > input$age_range[2])) %>%
         group_by(community, general_category) %>%
         summarize(n = n(),
                   free_food = sum(program_provides_free_food)) 
@@ -167,6 +161,7 @@ server <- function(input, output) {
         geom_sf(aes(fill = eval(call("$", gencat_count, as.name(paste(feature, data_type, fill_var, sep = "")))))) +
         scale_fill_gradient(name = "Count", low = "white", high = "#FF0000") +
         theme_void()
+      
     })
 }
 
