@@ -1,7 +1,12 @@
 library(tidyverse)
 
 load("map_cleaning.rda")
-
+list_priority_areas = c("Austin", "North Lawndale", "Humboldt Park", 
+                        "East Garfield Park", "Englewood", "Auburn Gresham",
+                        "West Garfield Park", "Roseland", "Greater Grand Crossing",
+                        "West Englewood", "South Shore", "New City", "Chicago Lawn",
+                        "South Lawndale", "West Pullman"
+)
 
 eda_counts <- mcmf_sp %>%
   mutate(program_provides_free_food = replace_na(program_provides_free_food, FALSE)) %>%
@@ -36,7 +41,7 @@ gencat_count <- gencat_count %>%
   group_by(community, general_category) %>%
   summarize(n = sum(n),
             free_food = sum(free_food)) %>% 
-  inner_join(as.data.frame(eda_counts2) %>% select(the_geom, community) %>% distinct(), by = "community")
+  inner_join(as.data.frame(eda_counts) %>% select(the_geom, community) %>% distinct(), by = "community")
 
 gencat_count <- pivot_wider(data = as.data.frame(gencat_count),
             names_from = general_category,
@@ -69,5 +74,21 @@ gencat_count <- pivot_wider(data = as.data.frame(gencat_count),
   mutate(free_food_prop_Academics = replace_na(free_food_prop_Academics, 0),
          `free_food_prop_Community Service` = replace_na(`free_food_prop_Community Service`, 0),
          `free_food_prop_Leisure & Arts` = replace_na(`free_food_prop_Leisure & Arts`, 0),
-         `free_food_prop_Professional Skill Building` = replace_na(`free_food_prop_Professional Skill Building`, 0))
+         `free_food_prop_Professional Skill Building` = replace_na(`free_food_prop_Professional Skill Building`, 0)) %>%
+  mutate(priority = tolower(community) %in% tolower(list_priority_areas))
+
+supp_data <- read_csv("data/ara.csv") %>% 
+  inner_join(as.data.frame(eda_counts) %>% select(the_geom, community) %>% distinct(), 
+             by = "community") %>%
+  mutate(priority = tolower(community) %in% tolower(list_priority_areas)) %>%
+  st_as_sf()
+
+save(eda_counts, supp_data, file = "map/fixed_map_counts.rda")
+
+supp_data %>%
+  ggplot() +
+  geom_sf(aes(fill = supp_data$college_enrollment),
+          lwd = ifelse(supp_data$priority == TRUE, .9, .1)) +
+  scale_fill_gradient(name = "Proportion", low = "white", high = "#6fbee6") +
+  theme_void()
 

@@ -18,7 +18,6 @@ library(sp)
 load("fixed_map_counts.rda")
 
 
-
 # Set up the application ui ----------------------------------------
 ui <- shinyUI(navbarPage("My CHI. My Future. Explorer",
     
@@ -46,7 +45,7 @@ ui <- shinyUI(navbarPage("My CHI. My Future. Explorer",
              hr(),
              fluidRow(sidebarPanel(width = 3,
                                    h4("Select a Category:"),
-                                   helpText("Chose a category to look at its accessibility in your community"),
+                                   helpText("Choose a category to look at its accessibility in your community"),
                                    selectInput("gen_category", 
                                                 label = "Select a Category:", 
                                                 choices = c("All",
@@ -62,6 +61,14 @@ ui <- shinyUI(navbarPage("My CHI. My Future. Explorer",
                                                label = "Select a Variable:",
                                                choices = c("Number of Programs",
                                                            "Programs that offer free food")),
+                                   h4("Select a Variable:"),
+                                   selectInput("ara_feature",
+                                               label = "Select a Variable:",
+                                               choices = c("Four-Year Graduation Rate",
+                                                           "College Enrollment Rate",
+                                                           "Free & Reduced Lunch Rate",
+                                                           "No Internet Rate"),
+                                               selected = "Four-Year Graduation Rate"),
                                    h4("Select Data Type:"),
                                    helpText("Choose between count and proportion. Proportion is only applicable if you choose a specific category."),
                                    radioButtons("data_type",
@@ -69,6 +76,11 @@ ui <- shinyUI(navbarPage("My CHI. My Future. Explorer",
                                                 choices = c("Count",
                                                             "Proportion"),
                                                 selected = "Count"),
+                                   h4("Click to Highlight Priority Regions:"),
+                                   radioButtons("priority_highlight",
+                                                label = "Click to highlight priority regions:",
+                                                choices = c("Remove Highlight", "Highlight"),
+                                                selected = "Remove Highlight"),
                                    h4("Select Grade Level Range:"),
                                    helpText("Select the grade level range you want to see. 0 stands for pre-K and below, and 13 stands for college and above."),
                                    sliderInput("age_range",
@@ -77,7 +89,10 @@ ui <- shinyUI(navbarPage("My CHI. My Future. Explorer",
                                                max = 13,
                                                value = c(0, 13),
                                                step = 1)),
-                      mainPanel(plotOutput("map", height = 500))
+                      #mainPanel(plotOutput("map", height = 500))
+                      mainPanel(splitLayout(cellWidths = c("50%", "50%"), 
+                                            plotOutput("map1"), 
+                                            plotOutput("map2")))
                       )),
     
     tabPanel("Online Opportunities")
@@ -90,7 +105,7 @@ ui <- shinyUI(navbarPage("My CHI. My Future. Explorer",
 # Set up the application server ----------------------------------------
 server <- function(input, output) {
 
-    output$map <- renderPlot({
+    output$map1 <- renderPlot({
       
       fill_var <- switch(input$gen_category,
                          "All" = "sum",
@@ -107,8 +122,21 @@ server <- function(input, output) {
                           "Count" = "",
                           "Proportion" = "prop_")
       
+      data_type_legend <- switch(input$data_type,
+                                 "Count" = "Count",
+                                 "Proportion" = "Proportion")
+      
+      priority_highlight <- switch(input$priority_highlight,
+                                   "Remove Highlight" = c(0.1, 0.1),
+                                   "Highlight" = c(0.9, 0.1))
+      
       # wrangle data
-      eda_counts2 <- eda_counts
+      list_priority_areas = c("Austin", "North Lawndale", "Humboldt Park", 
+                              "East Garfield Park", "Englewood", "Auburn Gresham",
+                              "West Garfield Park", "Roseland", "Greater Grand Crossing",
+                              "West Englewood", "South Shore", "New City", "Chicago Lawn",
+                              "South Lawndale", "West Pullman"
+      )
       gencat_count <- as.data.frame(eda_counts) %>%
         filter(!(min_grade < input$age_range[1] & max_grade < input$age_range[1]) & 
                  !(min_grade > input$age_range[2] & max_grade > input$age_range[2])) %>%
@@ -120,7 +148,7 @@ server <- function(input, output) {
         group_by(community, general_category) %>%
         summarize(n = sum(n),
                   free_food = sum(free_food)) %>% 
-        inner_join(as.data.frame(eda_counts2) %>% select(the_geom, community) %>% distinct(), by = "community")
+        inner_join(as.data.frame(eda_counts) %>% select(the_geom, community) %>% distinct(), by = "community")
       
       gencat_count <- pivot_wider(data = as.data.frame(gencat_count),
                                   names_from = general_category,
@@ -153,15 +181,36 @@ server <- function(input, output) {
         mutate(free_food_prop_Academics = replace_na(free_food_prop_Academics, 0),
                `free_food_prop_Community Service` = replace_na(`free_food_prop_Community Service`, 0),
                `free_food_prop_Leisure & Arts` = replace_na(`free_food_prop_Leisure & Arts`, 0),
-               `free_food_prop_Professional Skill Building` = replace_na(`free_food_prop_Professional Skill Building`, 0))
+               `free_food_prop_Professional Skill Building` = replace_na(`free_food_prop_Professional Skill Building`, 0)) %>%
+        mutate(priority = tolower(community) %in% tolower(list_priority_areas))
 
       # filter based on selected categories
       st_as_sf(gencat_count) %>%
         ggplot() +
-        geom_sf(aes(fill = eval(call("$", gencat_count, as.name(paste(feature, data_type, fill_var, sep = "")))))) +
-        scale_fill_gradient(name = "Count", low = "white", high = "#FF0000") +
+        geom_sf(aes(fill = eval(call("$", gencat_count, as.name(paste(feature, data_type, fill_var, sep = ""))))),
+                lwd = ifelse(gencat_count$priority == TRUE, priority_highlight[1], priority_highlight[2])) +
+        scale_fill_gradient(name = data_type_legend, low = "white", high = "#FF0000") +
         theme_void()
       
+    })
+    output$map2 <- renderPlot({
+      
+      priority_highlight <- switch(input$priority_highlight,
+                                   "Remove Highlight" = c(0.1, 0.1),
+                                   "Highlight" = c(0.9, 0.1))
+      
+      ara_feature <- switch(input$ara_feature,
+                            "Four-Year Graduation Rate" = supp_data$four_year_graduation_rate,
+                            "College Enrollment Rate" = supp_data$college_enrollment,
+                            "Free & Reduced Lunch Rate" = supp_data$percent_free_reduced_lunch,
+                            "No Internet Rate" = supp_data$no_internet)
+      
+      supp_data %>%
+        ggplot() +
+        geom_sf(aes(fill = ara_feature),
+                lwd = ifelse(supp_data$priority == TRUE, priority_highlight[1], priority_highlight[2])) +
+        scale_fill_gradient(name = "Rate", low = "white", high = "#6fbee6") +
+        theme_void()
     })
 }
 
