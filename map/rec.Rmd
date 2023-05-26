@@ -13,7 +13,7 @@ output: pdf_document
 #### Marketing
 
 - Develop target outreach strategies and marketing efforts to underserved communities 
-- Collaborate with community organizations, schools, and local youth-serving agencies (?)
+- Collaborate with community organizations, schools, and local youth-serving agencies
 
 #### Technology
 
@@ -34,7 +34,7 @@ Strengthen partnerships with schools, community organizations, and local busines
 #### Staff Professional Development
 
 - Collaborate with community partners to provide staff professional development opportunities
-- Focus training on inclusiveness, diversification and effective communication to serve the various needs of Chicago's youth (?)
+- Focus training on inclusiveness, diversification and effective communication to serve the various needs of Chicago's youth
 
 #### Community & Social Spaces
 
@@ -57,8 +57,6 @@ Strengthen partnerships with schools, community organizations, and local busines
 
 - Foster partnerships with local businesses and organizations to create job opportunities, internships, or apprenticeships
 
-- not sure what else to add ??
-
 #### Supplementing Academic Achievement
 
 - Develop a department or programs that offer academic support and support youth in program selection
@@ -67,6 +65,4 @@ Strengthen partnerships with schools, community organizations, and local busines
 #### Pathways to Mentorship
 
 - Create opportunities for youth to engage with mentors who can provide guidance, support, and networking opportunities, promoting upward mobility and personal growth
-
-- not sure what else to add ?? 
 

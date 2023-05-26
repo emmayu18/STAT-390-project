@@ -32,7 +32,8 @@ ui <- shinyUI(
                               h5("Website Links"),
                               p(a("My CHI. My Future (MCMF)", href = "https://explore.mychimyfuture.org")),
                               p(a("MCMF Data", href = "https://data.cityofchicago.org/Events/My-CHI-My-Future-Programs/w22p-bfyb/data")),
-                              p(a("CPS ARA", href = "https://www.cps.edu/sites/ara"))
+                              p(a("CPS ARA", href = "https://www.cps.edu/sites/ara")),
+                              p(a("Interet Access Data", href = "https://www.npr.org/local/309/2020/04/24/844015491/in-some-chicago-neighborhoods-up-to-half-of-the-kids-can-t-get-online"))
                           )
                       )
              ),
@@ -124,12 +125,19 @@ ui <- shinyUI(
              
              # online bar plots ----------------------------------------
              tabPanel("Plots",
-                      fluidRow(column(12,
-                                      h1("Time Analysis"),
-                                      p("We would like to...")
+                      fluidRow(sidebarPanel(width = 3,
+                                            h4("Select an ARA feature:"),
+                                            helpText("Choose a variable from the CPS ARA data to visualize across communities"),
+                                            selectInput("ara_var",
+                                                        label = "",
+                                                        choices = c("Four-Year Graduation Rate",
+                                                                    "College Enrollment Rate",
+                                                                    "Free & Reduced Lunch Rate",
+                                                                    "No Internet Rate"),
+                                                        selected = "Four-Year Graduation Rate")),
+                                mainPanel(plotOutput("bar"))
                       )),
-                      hr()),
-             
+
              # recommendations to stakeholders ----------------------------------------
              tabPanel("Recommendations",
                       includeMarkdown("rec.Rmd")
@@ -243,6 +251,7 @@ server <- function(input, output) {
       theme_void()
     
   })
+  
   output$map2 <- renderPlot({
     
     priority_highlight <- switch(input$priority_highlight,
@@ -263,6 +272,7 @@ server <- function(input, output) {
       labs(title = "Chicago Public School Annual Regional Analysis") +
       theme_void()
   })
+  
 }
 
 # run the application  ----------------------------------------
