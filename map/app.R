@@ -190,6 +190,7 @@ server <- function(input, output) {
         geom_sf(aes(fill = eval(call("$", gencat_count, as.name(paste(feature, data_type, fill_var, sep = ""))))),
                 lwd = ifelse(gencat_count$priority == TRUE, priority_highlight[1], priority_highlight[2])) +
         scale_fill_gradient(name = data_type_legend, low = "white", high = "#FF0000") +
+        labs(title = "My Chi, My Future") +
         theme_void()
       
     })
@@ -210,6 +211,7 @@ server <- function(input, output) {
         geom_sf(aes(fill = ara_feature),
                 lwd = ifelse(supp_data$priority == TRUE, priority_highlight[1], priority_highlight[2])) +
         scale_fill_gradient(name = "Rate", low = "white", high = "#6fbee6") +
+        labs(title = "Chicago Public School Annual Regional Analysis") +
         theme_void()
     })
 }

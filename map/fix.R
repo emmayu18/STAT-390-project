@@ -84,11 +84,3 @@ supp_data <- read_csv("data/ara.csv") %>%
   st_as_sf()
 
 save(eda_counts, supp_data, file = "map/fixed_map_counts.rda")
-
-supp_data %>%
-  ggplot() +
-  geom_sf(aes(fill = supp_data$college_enrollment),
-          lwd = ifelse(supp_data$priority == TRUE, .9, .1)) +
-  scale_fill_gradient(name = "Proportion", low = "white", high = "#6fbee6") +
-  theme_void()
-
