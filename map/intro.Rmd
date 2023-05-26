@@ -22,4 +22,6 @@ We hope to visualize the equity of opportunity for the City of Chicago's youth t
 
 We would like to understand how accessible are <strong>different categories</strong> of programs for <strong>different ages</strong> of youth? Do youth in <strong>different communities/regions</strong> of Chicago have the same access to similar types of programs? 
 
-Since online technically serve all geographic regions of Chicago, we will separately analyze online programs and compare the results with those from in-person programs. However, we do acknowledge that the engagement and experiences vary between the different program types. 
+
+## Literature Review
+***

@@ -1,25 +1,25 @@
 ---
-title: "lit-review"
-author: "Rhona Zhang"
-date: "`r Sys.Date()`"
 output: pdf_document
 ---
 
+
+![](logo.png)
+
 ## Understanding Chicago's Social Climate
 
-#### Wealth Inequality
+### Wealth Inequality
 
 Despite being the third largest city, Chicago has persistently been facing significant wealth inequality challenges, which is due to the significant variation in resource allocation. Some communities benefit from robust infrastructure, quality schools, healthcare facilities, and diverse economic opportunities, while others face immense barriers in accessing these resources. Historically marginalized neighborhoods often struggle with limited investment, inadequate public services, and insufficient job opportunities. Such disparities hinder social mobility and perpetuate systemic inequities, ultimately impacting the overall well-being and opportunities available to residents.
 
 It is estimated that a typical household’s wealth in the richest area of Chicago and Cook County is over <strong>200 times</strong> higher than a typical household’s wealth in the poorest areas. This disparity is geographically noticeable. Southern and western regions of Chicago have some of the lowest median net worth and over 40 percent of residents are living below the poverty level. According to the [Chicago Data Portal](https://data.cityofchicago.org/Health-Human-Services/below-poverty-level-by-community/b7zw-zvm2), Riverdale, Fuller Park, Englewood, and West Garfield Park are all areas that have poverty rates above 40 percent and the highest hardship indexes.
 
-#### Racial Disparities
+### Racial Disparities
 
 Furthermore, Chicago remains one of the most segregated metropolitan area in America. Racial disparities in socio-economic indicators persist, with African American and Hispanic communities often experiencing disproportionately high poverty rates, limited access to quality education, and limited economic opportunities. According to recent [Census](https://www.census.gov/quickfacts/chicagocityillinois) data, the city's population is approximately 33% non-Hispanic white, 29% African American, 29% Hispanic, and 7% Asian American. Despite whites being the minority in Chicago, they are the only group to see incomes rising by 52 percent between 1990 and 2012, compared to just 13 percent for African Americans and 15 percent for Hispanics. Interestingly, African American and Hispanic city residents have seen a fall in per capita incomes since 2000.
 
 This overlapping of racial and income segregation is clear in Chicago. The majority-white census tracts predominantly consist of less than 10 percent of families living in poverty, whereas slightly over half of the majority-black areas experience poverty rates exceeding 30 percent among families. Furthermore, one in four black Americans and one in six Hispanics live in high-poverty neighborhoods, compared to just one in thirteen white Americans. These disparities have a direct impact on the equity of opportunity available to residents in these communities.
 
-#### Inequality of Safety
+### Inequality of Safety
 
 In addition to challenges related to wealth and racial inequality,  Chicago also faces significant challenges in terms of high levels of gun violence and homicide. Although not all communities in Chicago experience the same level of violence, certain neighborhoods, primarily located on the city's South and West sides, face disproportionately high rates of gun violence. These areas are often characterized by high poverty rates, limited access to quality healthcare, inadequate educational resources, and limited economic investment. 
 
@@ -29,7 +29,7 @@ On the other hand, gun-related homicides in the years 2019 and 2020 were predomi
 
 ## Understanding Accessibility to Chicago's Youth
 
-#### Education/job/community$welfare (mentorship)/food
+### Education/job/community$welfare (mentorship)/food
 
 - how many youth don't have phones? access to interrnet?
 
@@ -38,7 +38,7 @@ Educational Inequities: Chicago's public education system has faced challenges r
 
 specifically for youth? 
 
-#### Conclusion
+### Conclusion
 
 In conclusion, Chicago's communities continue to grapple with deep-rooted challenges related to wealth inequality, racial disparities, and gun violence. The city's wealth disparity is evident in the vast differences in resource allocation and access to opportunities between affluent areas and economically disadvantaged neighborhoods. Racial disparities persist, with African American and Hispanic communities facing higher poverty rates and limited economic mobility. The overlap of racial and income segregation further exacerbates inequities and limits opportunities for residents in marginalized communities.
 
@@ -49,16 +49,8 @@ Addressing these complex challenges requires a multifaceted approach that focuse
 
 ## Additional Resouces
 
-#### Chicago Public Schools' Annual Regional Analysis
+### Chicago Public Schools' Annual Regional Analysis (ARA)
 
-The Chicago Public Schools (CPS) ARA data refers to the Academic Readiness Assessment data collected by the Chicago Public Schools system. This assessment is administered to students in order to measure their academic readiness and progress in various subjects.
+The ARA data provides valuable insights into the academic performance of students in the Chicago Public School (CPS) system and helps identify areas where additional support or interventions may be needed. Its purpose is to support CPS’s goal of providing every student with high-quality education in every neighborhood by giving stakeholders a consistent array of information regarding school quality, enrollment patterns, school choice, and program offerings by region. The goal is to ensure that every student in Chicago has access to quality public schools and a variety of schools and programs.
+The report includes information on all CPS schools, including traditional neighborhood, Selective Enrollment, Magnet, Charter, Special Education Specialty, and other alternative high schools.
 
-The ARA data provides valuable insights into the academic performance of students in CPS and helps identify areas where additional support or interventions may be needed. The assessment covers subjects such as English language arts, mathematics, and science, and is typically administered annually to students across different grade levels.
-
-Significant results from the CPS ARA data can vary depending on the specific focus of the analysis. However, some noteworthy findings may include:
-
-Achievement Gaps: The ARA data often highlights significant achievement gaps between different student groups, such as racial or ethnic groups, English language learners, or students with disabilities. These gaps may indicate disparities in academic outcomes and the need for targeted interventions to address these inequities.
-Grade-Level Proficiency: The data can provide insights into the percentage of students performing at grade level or meeting proficiency standards in various subjects. Identifying subjects or grade levels where students struggle can inform instructional strategies and curriculum development.
-Growth and Progress: The ARA data can also measure student growth over time, comparing their performance from one year to the next. This helps assess the effectiveness of educational programs and interventions and provides an indication of how well students are progressing academically.
-School and District Performance: Analyzing the ARA data can shed light on the performance of individual schools or the district as a whole. It helps identify high-performing schools and areas that may require additional support or improvement efforts.
-These are just a few examples of the insights that can be derived from the CPS ARA data. Researchers, educators, and policymakers can further explore the data to gain a comprehensive understanding of student achievement and inform decision-making processes to enhance educational outcomes.
